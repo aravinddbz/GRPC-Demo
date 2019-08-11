@@ -1,0 +1,66 @@
+
+
+
+
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.5'
+    }
+}
+
+plugins{
+    id 'java'
+}
+apply plugin: 'com.google.protobuf'
+apply plugin: 'idea'
+
+sourceSets.main.java.srcDir new File(buildDir, 'generated/source')
+idea {
+    module {
+        // Marks the already(!) added srcDir as "generated"
+        generatedSourceDirs += file('build/generated/source')
+    }
+}
+group 'com.github.simplesteph.hrpc'
+version '1.0-SNAPSHOT'
+
+
+
+sourceCompatibility = 1.8
+
+
+
+
+repositories {
+    mavenCentral()
+}
+
+
+dependencies {
+
+    //grpc
+    implementation 'io.grpc:grpc-netty-shaded:1.11.0'
+    implementation 'io.grpc:grpc-protobuf:1.11.0'
+    implementation 'io.grpc:grpc-stub:1.11.0'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.5.1-1"
+    }
+    plugins {
+        grpc {
+            artifact = 'io.grpc:protoc-gen-grpc-java:1.11.0'
+        }
+    }
+    generateProtoTasks {
+        all()*.plugins {
+            grpc {}
+        }
+    }
+}
